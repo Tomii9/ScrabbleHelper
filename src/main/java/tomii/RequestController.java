@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class RequestController {
 
 	WordFinder wordFinder = new WordFinder();
+	Board board = new Board();
 	
     @RequestMapping("/getbestmatch")
     public Word getWord(@RequestParam Map<String,String> requestParams) {
@@ -31,8 +32,16 @@ public class RequestController {
     }
     
     @RequestMapping("/refreshcache")
-    public void refreshCache() {
-    	wordFinder.refreshCache();
+    public boolean refreshCache() {
+    	return wordFinder.refreshCache();
+    }
+    @RequestMapping("/placeword")
+    public boolean placeWord(@RequestParam Map<String, String> requestParams){
+    	String word = requestParams.get("word");
+    	int posX = Integer.parseInt(requestParams.get("x"));
+    	int posY = Integer.parseInt(requestParams.get("y"));
+    	boolean down = Boolean.valueOf(requestParams.get("down"));
+    	return board.placeWord(word, posX, posY, down);
     }
     
     @RequestMapping("/admin/banuser")

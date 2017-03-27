@@ -67,7 +67,7 @@ public class WordFinder {
 		List<Word> results = new ArrayList<Word>();
 		for (Word word : words) {
 			Matcher m = p.matcher(word.getWord());
-			if (m.matches() && containsOnlyLettersFromHand(word.getWord(), hand)) {
+			if (m.matches()) {
 				results.add(word);
 			}
 		}
@@ -99,16 +99,13 @@ public class WordFinder {
 		return best;
 	}
 	
-	public void refreshCache() {
+	public boolean refreshCache() {
 		words = wordJDBCTemplate.refreshCache();
 		trie = new Trie(words);
 		System.out.println("done");
+		return true;
 	}
-	
-	private boolean containsOnlyLettersFromHand(String word, String[] hand) {
-	    return Arrays.stream(hand).parallel().allMatch(word::contains);
-	}
-	
+
 	public boolean contains(String string) {
 		return trie.containsWord(string);
 	}
