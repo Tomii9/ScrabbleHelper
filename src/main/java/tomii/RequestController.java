@@ -1,6 +1,5 @@
 package tomii;
 
-import java.util.List;
 import java.util.Map;
 
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -10,30 +9,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class RequestController {
 
-	WordFinder wordFinder = new WordFinder();
-	Board board = new Board();
-	
-    @RequestMapping("/getbestmatch")
-    public Word getWord(@RequestParam Map<String,String> requestParams) {
-    	String regex = requestParams.get("regex");
-    	String letters = requestParams.get("letters");
-    	String linetype = requestParams.get("linetype");
-    	String[] hand = letters.split("(?!^)");
-        return wordFinder.getBestMatch(regex, hand, linetype);
-    }
-    
-    @RequestMapping("/getmatches")
-    public List<Word> getWords(@RequestParam Map<String,String> requestParams) {
-    	String regex = requestParams.get("regex");
-    	String letters = requestParams.get("letters");
-    	String linetype = requestParams.get("linetype");
-    	String[] hand = letters.split("(?!^)");
-    	return wordFinder.getMatches(regex, hand, linetype);
-    }
+	PlaySession playSession = new PlaySession("admin"); //TODO
     
     @RequestMapping("/refreshcache")
     public boolean refreshCache() {
-    	return wordFinder.refreshCache();
+    	return playSession.refreshCache();
     }
     @RequestMapping("/placeword")
     public boolean placeWord(@RequestParam Map<String, String> requestParams){
@@ -41,7 +21,7 @@ public class RequestController {
     	int posX = Integer.parseInt(requestParams.get("x"));
     	int posY = Integer.parseInt(requestParams.get("y"));
     	boolean down = Boolean.valueOf(requestParams.get("down"));
-    	return board.placeWord(word, posX, posY, down);
+    	return playSession.placeWord(word, posX, posY, down);
     }
     
     @RequestMapping("/admin/banuser")
@@ -54,15 +34,24 @@ public class RequestController {
     	return 0;
     }
     
+    @RequestMapping("/gettopscore")
+    public int getTopScore(@RequestParam int position) {
+    	return 0;
+    }
+    
     @RequestMapping("/sethighscore")
     public void setHighScore(@RequestParam int score) {
     	
     }
     
-    @RequestMapping("/treetest")
+    @RequestMapping("/checklegitimacy")
     public boolean treetest(@RequestParam String word) {
-    	
-    	return wordFinder.contains(word);
+    	return playSession.containsWord(word);
+    }
+    
+    @RequestMapping("/syncboard")
+    public char[][] syncBoard() {
+    	return playSession.getBoard();
     }
     
 }

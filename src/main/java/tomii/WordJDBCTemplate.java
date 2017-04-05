@@ -11,7 +11,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 
 public class WordJDBCTemplate implements WordDao{
 
-	private DataSource dataSource;
 	private JdbcTemplate jdbcTemplateObject;
 	private List<Word> words;
 	
@@ -21,7 +20,6 @@ public class WordJDBCTemplate implements WordDao{
 	
 	@Override
 	public void setDataSource(DataSource dataSource) {
-		this.dataSource = dataSource;
 		this.jdbcTemplateObject = new JdbcTemplate(dataSource);
 	}
 
@@ -63,7 +61,6 @@ public class WordJDBCTemplate implements WordDao{
 	public List <Word> refreshCache() {
 		String SQL = "select word, name from words w, users u where w.uploader = u.id";
 		words = jdbcTemplateObject.query(SQL, new WordMapper());
-		System.out.println(words.size());
 		return words;
 	}
 

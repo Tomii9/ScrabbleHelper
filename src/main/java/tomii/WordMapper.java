@@ -11,7 +11,6 @@ public class WordMapper implements RowMapper<Word> {
 	public Word mapRow(ResultSet rs, int rownum) throws SQLException {
 		Word word = new Word();
 		word.setWord(rs.getString("WORD"));
-		word.setUploader(rs.getString("NAME"));
 		return word;
 	}
 	

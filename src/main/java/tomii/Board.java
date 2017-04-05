@@ -46,6 +46,18 @@ public class Board {
 		return board[x][y];
 	}
 	
+	public char[][] getBoard() {
+		return board;
+	}
+	
+	public int getWordMultiplier(int x, int y) {
+		return wordMultipliers[x][y];
+	}
+	
+	public int getLetterMultiplier(int x, int y) {
+		return letterMultipliers[x][y];
+	}
+	
 	public boolean placeWord(String word, int posX, int posY, boolean down) {
 		
 		char[][] boardSave = board.clone();
@@ -94,6 +106,16 @@ public class Board {
 	private boolean isOverWrite(int posX, int posY, char c) {
 		char ch = board[posX][posY];
 		return ch != '\u0000' && ch != c;
+	}
+	
+	public void transponeBoard() {
+		char[][] tmp = new char[15][15];
+		for(int i = 0; i < 15; i++) {
+			for(int j = 0; j < 15; j++) {
+				tmp[j][i] = board[i][j];
+			}
+		}
+		board = tmp;
 	}
 	
 	public void print() {

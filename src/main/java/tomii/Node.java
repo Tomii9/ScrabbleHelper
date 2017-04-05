@@ -10,6 +10,10 @@ public class Node {
 	private Map<Character, Node> children = new HashMap<Character, Node>();
 	private boolean isValid;
 	
+	public Node() {
+		
+	}
+	
 	public Node(char ch, String partialWord) {
 		this.ch = ch;
 		this.partialWord = partialWord;

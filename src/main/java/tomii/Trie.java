@@ -5,6 +5,10 @@ import java.util.List;
 public class Trie {
 	private Node root = new Node('\0', "");
 	
+	public Trie() {
+		
+	}
+	
 	public Trie (List<Word> words) {
 		for (Word word : words) {
 			addWord(word.getWord().toCharArray());
@@ -42,7 +46,7 @@ public class Trie {
 		return contains(word.toCharArray(), false);
 	}
 	
-	private Node getNode(char[] word) {
+	public Node getNode(char[] word) {
 		Node currentNode = root;
 		for (int i=0; i<word.length; i++) {
 			currentNode = currentNode.getChild(word[i]);
