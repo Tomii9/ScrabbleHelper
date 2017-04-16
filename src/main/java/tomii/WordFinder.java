@@ -25,6 +25,7 @@ public class WordFinder {
 	int largestBeginsAtX = 0;
 	int largestBeginsAtY = 0;
 	int largestScore = 0;
+	boolean largestIsDown = false;
 	String largestWord = "";
 	
 	public WordFinder() {
@@ -57,17 +58,160 @@ public class WordFinder {
 	}
 	
 	public Word getBestWord(List<Character> hand, Board board) {
+		boolean firstTurn = board.getSquare(7, 7) == EMPTY;
 		resetBestWord();
 		this.board = board;
+		this.hand = hand;
+		largestWord = "";
+		largestScore = -1;
+		largestBeginsAtX = -1;
+		largestBeginsAtY = -1;
 		List<AnchorSquare> anchorSquares = getAnchorSquares(board);
-		List<AnchorSquare> tempSquares = new Vector<AnchorSquare>();
-		String bestWord = new String();
 		Word result = new Word();
-		int size = anchorSquares.size();
-		
 		String tempResult = new String();
 		int tempLargestScore = -1;
+		int tempLargestBeginsAtX = -1;
+		int tempLargestBeginsAtY = -1;
+		boolean tempLargestIsDown = false;
+		AnchorSquare tempAnchorSquare = new AnchorSquare();
+		int limit;
 		
+		for (int i=0; i<anchorSquares.size(); i++) {
+			limit = getLimit(anchorSquares.get(i), board);
+			tempAnchorSquare = new AnchorSquare();
+			tempAnchorSquare.setX(anchorSquares.get(i).getX());
+			tempAnchorSquare.setY(anchorSquares.get(i).getY());
+			tempWordTotal = 0;
+			if (firstTurn) {
+				limit = 0;
+			}
+			if (limit==0) {
+				String leftPart = getLeftPart(tempAnchorSquare);
+				tempAnchorSquare.setY(anchorSquares.get(i).getY()-leftPart.length());
+				extendRight(leftPart, trie.getNode(leftPart.toCharArray()), tempAnchorSquare, tempAnchorSquare, false);
+			} else {
+				leftPart(new String(), trie.getRoot(), limit, tempAnchorSquare, false);
+
+			}
+			
+		}
+		
+		if (!firstTurn) {
+			
+			/*for (int i=0; i<anchorSquares.size(); i++) {
+				limit = getLimit(anchorSquares.get(i), board);
+				tempAnchorSquare = new AnchorSquare();
+				tempAnchorSquare.setX(anchorSquares.get(i).getX());
+				tempAnchorSquare.setY(anchorSquares.get(i).getY() + 1);
+				tempWordTotal = 0;
+				if ((anchorSquares.get(i).getY() < 14 && board.getSquare(anchorSquares.get(i).getX(), anchorSquares.get(i).getY() + 1) == EMPTY) &&
+						(anchorSquares.get(i).getY() > 0 && board.getSquare(anchorSquares.get(i).getX(), anchorSquares.get(i).getY() - 1) == EMPTY)) {
+					//leftPart(new String(), trie.getRoot(), limit, tempAnchorSquare, tempAnchorSquare, false);
+					extendRight(new String(), trie.getRoot(), tempAnchorSquare, tempAnchorSquare, true);
+				}
+				
+			}*/
+			
+			tempResult = largestWord;
+			tempLargestScore = largestScore;
+			tempLargestBeginsAtX = largestBeginsAtX;
+			tempLargestBeginsAtY = largestBeginsAtY;
+			tempLargestIsDown = largestIsDown;
+			
+			board.transponeBoard();
+			
+			anchorSquares = getAnchorSquares(board);
+			for (int i=0; i<anchorSquares.size(); i++) {
+				limit = getLimit(anchorSquares.get(i), board);
+				tempAnchorSquare = new AnchorSquare();
+				tempAnchorSquare.setX(anchorSquares.get(i).getX());
+				tempAnchorSquare.setY(anchorSquares.get(i).getY());
+				tempWordTotal = 0;
+				if (firstTurn) {
+					limit = 0;
+				}
+				if (limit==0) {
+					String leftPart = getLeftPart(tempAnchorSquare);
+					tempAnchorSquare.setY(anchorSquares.get(i).getY()-leftPart.length());
+					extendRight(leftPart, trie.getNode(leftPart.toCharArray()), tempAnchorSquare, tempAnchorSquare, true);
+				} else {
+					leftPart(new String(), trie.getRoot(), limit, tempAnchorSquare, true);
+
+				}
+				
+			}
+			/*for (int i=0; i<anchorSquares.size(); i++) {
+				limit = getLimit(anchorSquares.get(i), board);
+				tempAnchorSquare = new AnchorSquare();
+				tempAnchorSquare.setX(anchorSquares.get(i).getX());
+				tempAnchorSquare.setY(anchorSquares.get(i).getY() + 1);
+				tempWordTotal = 0;
+				if (firstTurn) {
+					limit = 0;
+				}
+				if ((anchorSquares.get(i).getY() < 14 && board.getSquare(anchorSquares.get(i).getX(), anchorSquares.get(i).getY() + 1) == EMPTY) &&
+						(anchorSquares.get(i).getY() > 0 && board.getSquare(anchorSquares.get(i).getX(), anchorSquares.get(i).getY() - 1) == EMPTY)) {
+					leftPart(bestWord, trie.getRoot(), limit, tempAnchorSquare, tempAnchorSquare, true);
+					//extendRight(new String(), trie.getRoot(), tempAnchorSquare, tempAnchorSquare, true);
+				}		
+			}*/
+			board.transponeBoard();
+			board.print();
+		
+		}
+		if (tempLargestScore < largestScore && !firstTurn) {
+			if (largestIsDown) {
+				int temp = largestBeginsAtX;
+				largestBeginsAtX = largestBeginsAtY;
+				largestBeginsAtY = temp;
+			}
+			
+			boolean success = board.placeWord(largestWord, largestBeginsAtX, largestBeginsAtY, largestIsDown);
+			if (!success) { //TODO SKIP CURRENT AND GET NEXT BEST
+				System.out.println("SHIT1");
+				System.out.println(largestWord);
+				System.out.println(largestBeginsAtX);
+				System.out.println(largestBeginsAtY);
+				System.out.println(largestScore);
+			} else {
+				result = new Word(largestWord, largestBeginsAtX, largestBeginsAtY, largestIsDown, largestScore);
+				System.out.println(largestWord);
+				System.out.println(largestBeginsAtX);
+				System.out.println(largestBeginsAtY);
+				System.out.println(largestScore);
+			}
+			
+		} else if (!firstTurn){
+			if (tempLargestIsDown) {
+				int temp = tempLargestBeginsAtX;
+				tempLargestBeginsAtX = tempLargestBeginsAtY;
+				tempLargestBeginsAtY = temp;
+			}
+			
+			boolean success = board.placeWord(tempResult, tempLargestBeginsAtX, tempLargestBeginsAtY, tempLargestIsDown);
+			if (!success) { //TODO SKIP CURRENT AND GET NEXT BEST
+				System.out.println(tempResult + " " + tempLargestBeginsAtX + " " + tempLargestBeginsAtY);
+				System.out.println(largestWord + " " + largestBeginsAtX + " " + largestBeginsAtY);
+				System.out.println("SHIT2");
+			} else {
+				result = new Word(tempResult, tempLargestBeginsAtX, tempLargestBeginsAtY, tempLargestIsDown, tempLargestScore);
+				System.out.println(tempResult);
+				System.out.println(tempLargestBeginsAtX);
+				System.out.println(tempLargestBeginsAtY);
+				System.out.println(tempLargestScore);
+			}
+		} else {
+			boolean success = board.placeWord(largestWord, largestBeginsAtX, largestBeginsAtY, largestIsDown);
+			if (!success) { //TODO SKIP CURRENT AND GET NEXT BEST
+				System.out.println("SHIT3");
+				System.out.println(largestWord);
+				System.out.println(largestBeginsAtX);
+				System.out.println(largestBeginsAtY);
+				System.out.println(largestScore);
+			} else {
+				result = new Word(largestWord, largestBeginsAtX, largestBeginsAtY, largestIsDown, largestScore);
+			}
+		}
 		return result;
 	}
 	
@@ -75,6 +219,18 @@ public class WordFinder {
 		words = wordJDBCTemplate.refreshCache();
 		trie = new Trie(words);
 		return true;
+	}
+	
+	public String getLeftPart(AnchorSquare anchorSquare) {
+		String leftPart = "";
+		int y = anchorSquare.getY();
+		int x = anchorSquare.getX();
+		while (y>0 && board.getSquare(x, y-1) != EMPTY) {
+			leftPart = leftPart.concat(String.valueOf(board.getSquare(x, y-1)));
+			y--;
+		}
+		leftPart = new StringBuffer(leftPart).reverse().toString();
+		return leftPart;
 	}
 
 	public boolean containsWord(String string) {
@@ -84,9 +240,9 @@ public class WordFinder {
 	private List<AnchorSquare> getAnchorSquares(Board board) {
 		List<AnchorSquare> anchorSquares = new Vector<AnchorSquare>();
 		AnchorSquare tmpSquare = new AnchorSquare();
-		if (board.getSquare(8, 8) == EMPTY) {
-			tmpSquare.setX(8);
-			tmpSquare.setY(8);
+		if (board.getSquare(7, 7) == EMPTY) {
+			tmpSquare.setX(7);
+			tmpSquare.setY(7);
 			anchorSquares.add(tmpSquare);
 		} else {
 			
@@ -99,6 +255,12 @@ public class WordFinder {
 							anchorSquares.add(tmpSquare);
 							tmpSquare = new AnchorSquare();	
 						}
+						if (j<14 && board.getSquare(i, j+1) == EMPTY) {
+							tmpSquare.setX(i);
+							tmpSquare.setY(j + 1);
+							anchorSquares.add(tmpSquare);
+							tmpSquare = new AnchorSquare();	
+						}
 					}
 				}
 			}	
@@ -106,102 +268,104 @@ public class WordFinder {
 		return anchorSquares;
 	}
 	
-	public Word getBestWord() {
-		Word result = new Word();
-		List<AnchorSquare> anchorSquares = new Vector<AnchorSquare>();
-		List<AnchorSquare> tempSquares = new Vector<AnchorSquare>();
-		anchorSquares = getAnchorSquares(board);
-		int size = anchorSquares.size();
-		
-		String tempResult = new String();
-		int tempLargestScore = -1;
-		return result;
-	}
-	
 	private int getLimit(AnchorSquare anchorSquare, Board board) {
 		int limit = 0;
 		int y = anchorSquare.getY();
-		while (board.getSquare(anchorSquare.getX(), y) == EMPTY) {
+		while (y>0 && board.getSquare(anchorSquare.getX(), y-1) == EMPTY) {
 			limit++;
 			y--;
 		}
 		return limit;
 	}
 	
-	public void leftPart (String partialWord, Node node, int limit,
-			AnchorSquare anchorSquare, AnchorSquare start, boolean transponed) {
+	public void leftPart (String partialWord, Node node, int limit, AnchorSquare start, boolean transponed) {
 		
-		extendRight(partialWord, node, anchorSquare, anchorSquare, start, transponed);
+		extendRight(partialWord, node, start, start, transponed);
 		Node newNode = new Node();
 		
-		if (limit > 0) {
+		if (limit > 0 && node != null) {
 			
 			Set<Character> children = node.getChildren().keySet();
 			
 			for (Character character : children) {
 				if (hand.contains(character)) {
-					hand.remove(character);
+					hand.remove(new Character(character));
 					newNode = node.getChild(character);
-					start.setY(start.getY() - 1);
-					leftPart(character + partialWord, newNode, limit-1, anchorSquare, start, transponed);
+					if (start.getY() > 0) {
+						AnchorSquare tempStart = new AnchorSquare();
+						tempStart.setX(start.getX());
+						tempStart.setY(start.getY() - 1);
+						//start.setY(start.getY()-1);
+						leftPart(character + partialWord, newNode, limit-1, tempStart, transponed);
+					}
 					hand.add(character);
 					
-				} else if (hand.contains('*')) {
+				} else if (hand.contains(new Character('*'))) {
 					Set<Character> allLetters = lettervalues.keySet();
 					for (Character character2 : allLetters) {
-						hand.remove('*');
+						hand.remove(new Character('*'));
 						newNode = node.getChild(character2);
-						start.setY(start.getY() - 1);
-						leftPart(character2 + partialWord, newNode, limit-1, anchorSquare, start, transponed);
-						hand.add('*');
+						if (start.getY() > 0) {
+							AnchorSquare tempStart = new AnchorSquare();
+							tempStart.setX(start.getX());
+							tempStart.setY(start.getY() - 1);
+							//start.setY(start.getY()-1);
+							leftPart(character2 + partialWord, newNode, limit-1, tempStart, transponed);
+						}
+						hand.add(new Character('*'));
 					}
 				}
 			}
 		}
 	}
 	
-	private void extendRight(String partialWord, Node node, AnchorSquare anchorSquare, 
-			AnchorSquare newSquare, AnchorSquare start, boolean transponed) {
+	private void extendRight(String partialWord, Node node, AnchorSquare newSquare, AnchorSquare start, boolean transponed) {
 		Node newNode = new Node();
 		AnchorSquare nextSquare = new AnchorSquare();
-		if(board.getSquare(newSquare.getX(), newSquare.getY()) == EMPTY) {
-			if (trie.containsWord(partialWord) && node.isValid()) {
-				if (7-hand.size() < partialWord.length()) {
-					sumWordValue(partialWord, start.getX(), start.getY(), true, transponed);
-				} else if(board.getSquare(7, 7) == EMPTY) {
+		if (node != null) {
+			
+			
+			if(board.getSquare(newSquare.getX(), newSquare.getY()) == EMPTY) {
+				if (trie.containsWord(partialWord) && node.isValid() && (newSquare.getY() == 14 || board.getSquare(newSquare.getX(), newSquare.getY()+1) == EMPTY)) {
 					sumWordValue(partialWord, start.getX(), start.getY(), true, transponed);
 				}
-			}
-			Set<Character> childNodes = node.getChildren().keySet();
-			
-			for (Character c : childNodes) {
-				if (hand.contains(c) && crossCheck(c, newSquare, transponed)) {
-					hand.remove(c);
-					newNode = node.getChild(c);
-					nextSquare.setX(newSquare.getX());
-					nextSquare.setY(newSquare.getY()+1);
-					extendRight(partialWord+c, newNode, anchorSquare, nextSquare, start, transponed);
-					hand.add(c);
-				} else if (hand.contains('*')) {
-					Set<Character> allLetters = lettervalues.keySet();
-					for (Character c2: allLetters) {
-						hand.remove('*');
-						newNode = node.getChild(c2);
-						nextSquare.setX(newSquare.getX());
-						nextSquare.setY(newSquare.getY()+1);
-						extendRight(partialWord+c2, newNode, anchorSquare, nextSquare, start, transponed);
-						hand.add('*');
+				Set<Character> childNodes = node.getChildren().keySet();
+				
+				for (Character c : childNodes) {
+					if (hand.contains(c) && crossCheck(c, newSquare, transponed)) {
+						hand.remove(new Character(c));
+						newNode = node.getChild(c);
+						if (newSquare.getY() < 14) {
+							nextSquare.setX(newSquare.getX());
+							nextSquare.setY(newSquare.getY()+1);
+							extendRight(partialWord+c, newNode, nextSquare, start, transponed);
+						}
+						hand.add(c);
+					} else if (hand.contains('*')) {
+						Set<Character> allLetters = lettervalues.keySet();
+						for (Character c2: allLetters) {
+							if (node.getChild(c2) != null) {
+								hand.remove(new Character('*'));
+								newNode = node.getChild(c2);
+								if (newSquare.getY() < 14) {
+									nextSquare.setX(newSquare.getX());
+									nextSquare.setY(newSquare.getY()+1);
+									extendRight(partialWord+c2, newNode, nextSquare, start, transponed);
+								}
+								hand.add('*');
+							}
+						}
 					}
 				}
+			} else {
+				Character letterOnBoard = board.getSquare(newSquare.getX(), newSquare.getY());
+				
+				if (node.getChild(letterOnBoard) != null) {
+					nextSquare.setX(newSquare.getX());
+					nextSquare.setY(newSquare.getY());
+					extendRight(partialWord+letterOnBoard, node.getChild(letterOnBoard), nextSquare, start, transponed);
+				}	
 			}
-		} else {
-			Character letterOnBoard = board.getSquare(newSquare.getX(), newSquare.getY());
-			
-			if (node.getChild(letterOnBoard) != null) {
-				nextSquare.setX(newSquare.getX());
-				nextSquare.setY(newSquare.getY());
-				extendRight(partialWord+letterOnBoard, node.getChild(letterOnBoard), anchorSquare, nextSquare, start, transponed);
-			}	
 		}
 	}
 	
@@ -210,45 +374,51 @@ public class WordFinder {
 		String toCheck = c.toString();
 		int x = anchorSquare.getX();
 		int y = anchorSquare.getY();
-		
-		if (board.getSquare(x-1, y) != EMPTY) {
-			while (board.getSquare(x-1, y) != EMPTY) {
+		AnchorSquare crossStart = new AnchorSquare();
+		if (x > 0 && board.getSquare(x-1, y) != EMPTY) {
+			while (x>0 && board.getSquare(x-1, y) != EMPTY) {
 				toCheck = board.getSquare(x-1, y) + toCheck;
 				x--;
 			}
+			crossStart.setX(x);
+			crossStart.setY(y);
 		}
 		
 		x = anchorSquare.getX();
-		if (board.getSquare(x+1, y) != EMPTY) {
-			while (board.getSquare(x+1, y) != EMPTY) {
+		if (x < 14 && board.getSquare(x+1, y) != EMPTY) {
+			while (x < 14 &&board.getSquare(x+1, y) != EMPTY) {
 				toCheck = board.getSquare(x+1, y) + toCheck;
 				x++;
 			}
 			
 		}
 		
-		if (!trie.containsWord(toCheck)) {
+		if (!trie.containsWord(toCheck) && toCheck.length() > 1) { //TODO
 			return false;
+		} else if (trie.containsWord(toCheck)) {
+			//sumWordValue(toCheck, crossStart.getX(), crossStart.getY(), false, transponed);
 		}
 		
 		toCheck = c.toString();
-		if (board.getSquare(x, y-1) != EMPTY) {
-			while (board.getSquare(x, y-1) != EMPTY) {
+		if (y > 0 && board.getSquare(x, y-1) != EMPTY) {
+			while (y > 0 && board.getSquare(x, y-1) != EMPTY) {
 				toCheck = board.getSquare(x, y-1) + toCheck;
 				y--;
 			}
 		}
 		
 		y = anchorSquare.getY();
-		if (board.getSquare(x, y+1) != EMPTY) {
-			while (board.getSquare(x, y+1) != EMPTY) {
+		if (y<14 &&board.getSquare(x, y+1) != EMPTY) {
+			while (y < 14 && board.getSquare(x, y+1) != EMPTY) {
 				toCheck = toCheck + board.getSquare(x, y+1);
 				y++;
 			}
 		}
 		
-		if (!trie.containsWord(toCheck)) {
+		if (!trie.containsWord(toCheck) && toCheck.length() > 1) {
 			return false;
+		} else if (trie.containsWord(toCheck)) {
+			//sumWordValue(toCheck, crossStart.getX(), crossStart.getY(), false, transponed);
 		}
 		return true;
 	}
@@ -260,27 +430,28 @@ public class WordFinder {
 		int letterMultiplier = 0;
 		char[] wordCharArray = word.toCharArray();
 		for (int i=0; i<wordCharArray.length; i++) {
-			if (x < 15 && i+y < 15) {
-				wordMultiplier += board.getWordMultiplier(x, y + i);
-				if (board.getLetterMultiplier(x, y+i) != 0) {
-					letterMultiplier += (board.getLetterMultiplier(x, y+i))*lettervalues.get(wordCharArray[i]);
-				} else {
-					letterMultiplier += lettervalues.get(wordCharArray[i]);
-				}
+
+			wordMultiplier += board.getWordMultiplier(x, y + i);
+			if (board.getLetterMultiplier(x, y+i) != 0) {
+				letterMultiplier += (board.getLetterMultiplier(x, y+i))*lettervalues.get(wordCharArray[i]);
 			} else {
-				return -1;
+				letterMultiplier += lettervalues.get(new Character(wordCharArray[i]));
 			}
 			
 			if (wordMultiplier != 0) {
 				result = wordMultiplier * letterMultiplier;
+			} else {
+				result = letterMultiplier;
 			}
 			if (!lastCheck) {
 				tempWordTotal += result;
-			} else {
+			} else if (result + tempWordTotal > largestScore) {
 				largestBeginsAtX = x;
 				largestBeginsAtY = y;
-				largestScore = result;
+				largestScore = result + tempWordTotal;
 				largestWord = word;
+				largestIsDown = trans;
+				tempWordTotal = 0;
 			}
 		}
 		return result;
@@ -292,6 +463,7 @@ public class WordFinder {
 		largestBeginsAtY = 0;
 		largestScore = 0;
 		largestWord = "";
+		largestIsDown = false;
 	}
 
 }

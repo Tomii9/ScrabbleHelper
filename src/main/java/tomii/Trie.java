@@ -15,6 +15,10 @@ public class Trie {
 		}
 	}
 	
+	public Node getRoot() {
+		return root;
+	}
+	
 	public void addWord (char[] word) {
 		
 		Node currentNode = root;

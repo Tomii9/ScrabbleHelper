@@ -33,5 +33,22 @@ public class PlaySession {
 	public char[][] getBoard() {
 		return board.getBoard();
 	}
+	
+	public boolean setHand(String handString) {
+		hand = new Vector<Character>();
+		for (int i=0; i<handString.length(); i++) {
+			hand.add(handString.charAt(i));
+		}
+		return true;
+	}
+	
+	public Word getBestWord() {
+		return wordfinder.getBestWord(hand, board);
+	}
+	
+	public boolean resetBoard() {
+		board = new Board();
+		return true;
+	}
 
 }

@@ -4,14 +4,18 @@ public class Word {
 	private String word;
 	private int x;
 	private int y;
+	private boolean down;
+	private int value;
 	
 	public Word () {
 	}
 	
-	public Word (String word, int x, int y) {
+	public Word (String word, int x, int y, boolean down, int value) {
 		this.word = word;
 		this.x = x;
 		this.y = y;
+		this.down = down;
+		this.value = value;
 	}
 
 	public Word (String word) {
@@ -42,5 +46,22 @@ public class Word {
 		this.y = y;
 	}
 
+	public boolean isDown() {
+		return down;
+	}
+
+	public void setDown(boolean down) {
+		this.down = down;
+	}
+
+	public int getValue() {
+		return value;
+	}
+
+	public void setValue(int value) {
+		this.value = value;
+	}
+
+	
 	
 }

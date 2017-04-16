@@ -49,9 +49,24 @@ public class RequestController {
     	return playSession.containsWord(word);
     }
     
+    @RequestMapping("/sethand")
+    public boolean setHand(@RequestParam String hand) {
+    	return playSession.setHand(hand);
+    }
+    
+    @RequestMapping("/getbestword")
+    public Word getBestWord() {
+    	return playSession.getBestWord();
+    }
+    
     @RequestMapping("/syncboard")
     public char[][] syncBoard() {
     	return playSession.getBoard();
+    }
+    
+    @RequestMapping("/resetboard")
+    public boolean resetBoard() {
+    	return playSession.resetBoard();
     }
     
 }
