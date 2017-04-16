@@ -86,9 +86,8 @@ public class WordFinder {
 				limit = 0;
 			}
 			if (limit==0) {
-				String leftPart = getLeftPart(tempAnchorSquare);
-				tempAnchorSquare.setY(anchorSquares.get(i).getY()-leftPart.length());
-				extendRight(leftPart, trie.getNode(leftPart.toCharArray()), tempAnchorSquare, tempAnchorSquare, false);
+				tempAnchorSquare.setY(anchorSquares.get(i).getY()-1);
+				extendRight(new String(), trie.getRoot(), tempAnchorSquare, tempAnchorSquare, false);
 			} else {
 				leftPart(new String(), trie.getRoot(), limit, tempAnchorSquare, false);
 
@@ -131,9 +130,8 @@ public class WordFinder {
 					limit = 0;
 				}
 				if (limit==0) {
-					String leftPart = getLeftPart(tempAnchorSquare);
-					tempAnchorSquare.setY(anchorSquares.get(i).getY()-leftPart.length());
-					extendRight(leftPart, trie.getNode(leftPart.toCharArray()), tempAnchorSquare, tempAnchorSquare, true);
+					tempAnchorSquare.setY(anchorSquares.get(i).getY()-1);
+					extendRight(new String(), trie.getRoot(), tempAnchorSquare, tempAnchorSquare, true);
 				} else {
 					leftPart(new String(), trie.getRoot(), limit, tempAnchorSquare, true);
 
@@ -362,7 +360,7 @@ public class WordFinder {
 				
 				if (node.getChild(letterOnBoard) != null) {
 					nextSquare.setX(newSquare.getX());
-					nextSquare.setY(newSquare.getY());
+					nextSquare.setY(newSquare.getY()+1);
 					extendRight(partialWord+letterOnBoard, node.getChild(letterOnBoard), nextSquare, start, transponed);
 				}	
 			}
