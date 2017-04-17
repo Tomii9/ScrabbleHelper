@@ -60,16 +60,19 @@ public class Board {
 	
 	public boolean placeWord(String word, int posX, int posY, boolean down) {
 		
-		char[][] boardSave = board.clone();
+		char[] boardSave = new char[word.length()];
 		String sameWord = "";
 		
 		if (down && posX+word.length()<=15) {
 				
 			for (int i=0;i<word.length(); i++) {
 				if (isOverWrite(posX+i, posY, word.charAt(i))) {
-					board = boardSave;
+					for (int k=0; k<i; k++) {
+						board[posX+k][posY] = boardSave[k];
+					}
 					return false;
 				}
+				boardSave[i] = board[posX+i][posY]; 
 				sameWord = sameWord.concat(String.valueOf(board[posX+i][posY]));
 				board[posX+i][posY]=word.charAt(i);
 			}
@@ -86,9 +89,12 @@ public class Board {
 			for (int j=0; j<word.length(); j++) {
 				
 				if (isOverWrite(posX, posY+j, word.charAt(j))) {
-					board = boardSave;
+					for (int k=0; k<j; k++) {
+						board[posX][posY+k] = boardSave[k];
+					}
 					return false;
 				}
+				boardSave[j] = board[posX][posY+j];
 				sameWord = sameWord.concat(String.valueOf(board[posX][posY+j]));
 				board[posX][posY+j]=word.charAt(j);
 			}
@@ -121,10 +127,11 @@ public class Board {
 	public void print() {
 		for(int i = 0; i < 15; i++) {
 			for(int j = 0; j < 15; j++) {
-				if (board[i][j] == '\n') {
-					System.out.println("0 ");
+				if (board[i][j] == '\u0000') {
+					System.out.print(". ");
+				} else {
+					System.out.print(board[i][j] + " ");
 				}
-				System.out.print(board[i][j] + " ");
 			}
 			System.out.println();
 		}
