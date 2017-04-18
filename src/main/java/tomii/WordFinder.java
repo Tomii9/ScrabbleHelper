@@ -293,7 +293,7 @@ public class WordFinder {
 				if (trie.containsWord(partialWord) && node.isValid() &&
 						(newSquare.getY() == 14 || board.getSquare(newSquare.getX(), newSquare.getY()+1) == EMPTY) &&
 						!alreadyOnBoard(start, partialWord.toCharArray())) {
-					sumWordValue(partialWord, start.getX(), start.getY(), transponed);
+					sumWordValue(partialWord, start.getX(), start.getY(), transponed, crossSum);
 				}
 				Set<Character> childNodes = node.getChildren().keySet();
 				
@@ -343,13 +343,14 @@ public class WordFinder {
 		int x = anchorSquare.getX();
 		int y = anchorSquare.getY();
 		AnchorSquare crossStart = new AnchorSquare();
+		crossStart.setX(x);
+		crossStart.setY(y);
 		if (x > 0 && board.getSquare(x-1, y) != EMPTY) {
 			while (x>0 && board.getSquare(x-1, y) != EMPTY) {
 				toCheck = board.getSquare(x-1, y) + toCheck;
 				x--;
 			}
 			crossStart.setX(x);
-			crossStart.setY(y);
 		}
 		
 		x = anchorSquare.getX();
@@ -370,7 +371,7 @@ public class WordFinder {
 		return sumCrossValue(toCheck, crossStart.getX(), crossStart.getY());
 	}
 	
-	private int sumWordValue(String word, int x, int y, boolean trans) {
+	private int sumWordValue(String word, int x, int y, boolean trans, int crossSum) {
 		
 		int result = 0;
 		int wordMultiplier = 0;
@@ -386,9 +387,9 @@ public class WordFinder {
 			}
 			
 			if (wordMultiplier != 0) {
-				result = wordMultiplier * letterMultiplier;
+				result = wordMultiplier * letterMultiplier + crossSum;
 			} else {
-				result = letterMultiplier;
+				result = letterMultiplier + crossSum;
 			}
 			if (result > largestScore) {
 				largestBeginsAtX = x;
