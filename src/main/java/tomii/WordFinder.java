@@ -84,12 +84,12 @@ public class WordFinder {
 				limit = 0;
 			}*/
 			int leftPartLength = getLeftPart(tempAnchorSquare).length();
-			if (limit==0 && tempAnchorSquare.getY() > 0+leftPartLength && !firstTurn) {
+			if (limit==0 && tempAnchorSquare.getY() >= leftPartLength && !firstTurn) {
 				tempAnchorSquare.setY(anchorSquares.get(i).getY()-leftPartLength);
 				extendRight(new String(), trie.getRoot(), tempAnchorSquare, tempAnchorSquare, false);
 				//leftPart(new String(), trie.getRoot(), limit, tempAnchorSquare, false);
 			} else {
-				leftPart(new String(), trie.getRoot(), limit, tempAnchorSquare, false);
+				leftPart(new String(), trie.getRoot(), limit, anchorSquares.get(i), tempAnchorSquare, false);
 
 			}
 			
@@ -130,12 +130,12 @@ public class WordFinder {
 					limit = 0;
 				}*/
 				int leftPartLength = getLeftPart(tempAnchorSquare).length();
-				if (limit==0 && tempAnchorSquare.getY() > leftPartLength && !firstTurn) {
+				if (limit==0 && tempAnchorSquare.getY() >= leftPartLength && !firstTurn) {
 					tempAnchorSquare.setY(anchorSquares.get(i).getY()-leftPartLength);
 					extendRight(new String(), trie.getRoot(), tempAnchorSquare, tempAnchorSquare, true);
 					//leftPart(new String(), trie.getRoot(), limit, tempAnchorSquare, true);
 				} else {
-					leftPart(new String(), trie.getRoot(), limit, tempAnchorSquare, true);
+					leftPart(new String(), trie.getRoot(), limit, anchorSquares.get(i), tempAnchorSquare, true);
 
 				}
 				
@@ -156,7 +156,6 @@ public class WordFinder {
 				}		
 			}*/
 			board.transponeBoard();
-			board.print();
 		
 		}
 		if (tempLargestScore < largestScore && !firstTurn) {
@@ -278,8 +277,12 @@ public class WordFinder {
 		int limit = 0;
 		int y = anchorSquare.getY();
 		while (y>0 && board.getSquare(anchorSquare.getX(), y-1) == EMPTY) {
-			limit++;
-			y--;
+			if ((y>1 && board.getSquare(anchorSquare.getX(), y-2) == EMPTY) || y==1) {
+				limit++;
+				y--;
+			} else {
+				break;
+			}
 		}
 		return limit;
 	}
@@ -296,9 +299,9 @@ public class WordFinder {
 		return true;
 	}
 	
-	public void leftPart (String partialWord, Node node, int limit, AnchorSquare start, boolean transponed) {
+	public void leftPart (String partialWord, Node node, int limit, AnchorSquare anchor, AnchorSquare start, boolean transponed) {
 		
-		extendRight(partialWord, node, start, start, transponed);
+		extendRight(partialWord, node, anchor, start, transponed);
 		Node newNode = new Node();
 		
 		if (limit > 0 && node != null) {
@@ -309,11 +312,11 @@ public class WordFinder {
 				if (hand.contains(character)) {
 					hand.remove(new Character(character));
 					newNode = node.getChild(character);
-					if (start.getY() > 0) {
+					if (start.getY() > 0 && crossCheck(character, start, transponed)) {
 						AnchorSquare tempStart = new AnchorSquare();
 						tempStart.setX(start.getX());
 						tempStart.setY(start.getY()-1);
-						leftPart(character + partialWord, newNode, limit-1, tempStart, transponed);
+						leftPart(character + partialWord, newNode, limit-1, anchor, tempStart, transponed);
 					}
 					hand.add(character);
 					
@@ -322,11 +325,11 @@ public class WordFinder {
 					for (Character character2 : allLetters) {
 						hand.remove(new Character('*'));
 						newNode = node.getChild(character2);
-						if (start.getY() > 0) {
+						if (start.getY() > 0 && crossCheck(character2, start, transponed)) {
 							AnchorSquare tempStart = new AnchorSquare();
 							tempStart.setX(start.getX());
 							tempStart.setY(start.getY()-1);
-							leftPart(character2 + partialWord, newNode, limit-1, tempStart, transponed);
+							leftPart(character2 + partialWord, newNode, limit-1, anchor, tempStart, transponed);
 						}
 						hand.add(new Character('*'));
 					}
@@ -405,7 +408,7 @@ public class WordFinder {
 		x = anchorSquare.getX();
 		if (x < 14 && board.getSquare(x+1, y) != EMPTY) {
 			while (x < 14 &&board.getSquare(x+1, y) != EMPTY) {
-				toCheck = board.getSquare(x+1, y) + toCheck;
+				toCheck = toCheck + board.getSquare(x+1, y);
 				x++;
 			}
 			
@@ -417,7 +420,7 @@ public class WordFinder {
 			//sumWordValue(toCheck, crossStart.getX(), crossStart.getY(), false, transponed);
 		}
 		
-		toCheck = c.toString();
+		/*toCheck = c.toString();
 		if (y > 0 && board.getSquare(x, y-1) != EMPTY) {
 			while (y > 0 && board.getSquare(x, y-1) != EMPTY) {
 				toCheck = board.getSquare(x, y-1) + toCheck;
@@ -433,11 +436,14 @@ public class WordFinder {
 			}
 		}
 		
+		
+		
 		if (!trie.containsWord(toCheck) && toCheck.length() > 1) {
 			return false;
 		} else if (trie.containsWord(toCheck)) {
+			System.out.println(toCheck);
 			//System.out.println(sumWordValue(toCheck, crossStart.getX(), crossStart.getY(), false, transponed));
-		}
+		}*/
 		return true;
 	}
 	
