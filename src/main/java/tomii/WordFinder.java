@@ -312,10 +312,10 @@ public class WordFinder {
 				if (hand.contains(character)) {
 					hand.remove(new Character(character));
 					newNode = node.getChild(character);
-					if (start.getY() > 0 && crossCheck(character, start, transponed)) {
-						AnchorSquare tempStart = new AnchorSquare();
-						tempStart.setX(start.getX());
-						tempStart.setY(start.getY()-1);
+					AnchorSquare tempStart = new AnchorSquare();
+					tempStart.setX(start.getX());
+					tempStart.setY(start.getY()-1);
+					if (start.getY() > 0 && crossCheck(character, tempStart, transponed)) {
 						leftPart(character + partialWord, newNode, limit-1, anchor, tempStart, transponed);
 					}
 					hand.add(character);
@@ -325,10 +325,10 @@ public class WordFinder {
 					for (Character character2 : allLetters) {
 						hand.remove(new Character('*'));
 						newNode = node.getChild(character2);
-						if (start.getY() > 0 && crossCheck(character2, start, transponed)) {
-							AnchorSquare tempStart = new AnchorSquare();
-							tempStart.setX(start.getX());
-							tempStart.setY(start.getY()-1);
+						AnchorSquare tempStart = new AnchorSquare();
+						tempStart.setX(start.getX());
+						tempStart.setY(start.getY()-1);
+						if (start.getY() > 0 && crossCheck(character2, tempStart, transponed)) {
 							leftPart(character2 + partialWord, newNode, limit-1, anchor, tempStart, transponed);
 						}
 						hand.add(new Character('*'));
@@ -417,33 +417,9 @@ public class WordFinder {
 		if (!trie.containsWord(toCheck) && toCheck.length() > 1) { //TODO
 			return false;
 		} else if (trie.containsWord(toCheck)) {
-			//sumWordValue(toCheck, crossStart.getX(), crossStart.getY(), false, transponed);
+			sumWordValue(toCheck, crossStart.getX(), crossStart.getY(), false, transponed);
 		}
 		
-		/*toCheck = c.toString();
-		if (y > 0 && board.getSquare(x, y-1) != EMPTY) {
-			while (y > 0 && board.getSquare(x, y-1) != EMPTY) {
-				toCheck = board.getSquare(x, y-1) + toCheck;
-				y--;
-			}
-		}
-		
-		y = anchorSquare.getY();
-		if (y<14 &&board.getSquare(x, y+1) != EMPTY) {
-			while (y < 14 && board.getSquare(x, y+1) != EMPTY) {
-				toCheck = toCheck + board.getSquare(x, y+1);
-				y++;
-			}
-		}
-		
-		
-		
-		if (!trie.containsWord(toCheck) && toCheck.length() > 1) {
-			return false;
-		} else if (trie.containsWord(toCheck)) {
-			System.out.println(toCheck);
-			//System.out.println(sumWordValue(toCheck, crossStart.getX(), crossStart.getY(), false, transponed));
-		}*/
 		return true;
 	}
 	
