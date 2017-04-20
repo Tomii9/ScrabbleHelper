@@ -5,12 +5,8 @@ import java.util.List;
 public class Trie {
 	private Node root = new Node('\0', "");
 	
-	public Trie() {
-		
-	}
-	
-	public Trie (List<Word> words) {
-		for (Word word : words) {
+	public Trie (List<WordDTO> words) {
+		for (WordDTO word : words) {
 			addWord(word.getWord().toCharArray());
 		}
 	}

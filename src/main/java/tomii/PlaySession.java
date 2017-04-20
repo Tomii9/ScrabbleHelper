@@ -42,7 +42,7 @@ public class PlaySession {
 		return true;
 	}
 	
-	public Word getBestWord() {
+	public WordDTO getBestWord() {
 		return wordfinder.getBestWord(hand, board);
 	}
 	

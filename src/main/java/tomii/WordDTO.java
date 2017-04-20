@@ -1,16 +1,16 @@
 package tomii;
 
-public class Word {
+public class WordDTO {
 	private String word;
 	private int x;
 	private int y;
 	private boolean down;
 	private int value;
 	
-	public Word () {
+	public WordDTO () {
 	}
 	
-	public Word (String word, int x, int y, boolean down, int value) {
+	public WordDTO (String word, int x, int y, boolean down, int value) {
 		this.word = word;
 		this.x = x;
 		this.y = y;
@@ -18,7 +18,7 @@ public class Word {
 		this.value = value;
 	}
 
-	public Word (String word) {
+	public WordDTO (String word) {
 		this.word = word;
 	}
 

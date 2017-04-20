@@ -1,5 +1,6 @@
 package tomii;
 
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -9,7 +10,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class RequestController {
 
-	PlaySession playSession = new PlaySession("admin"); //TODO
+	PlaySession playSession = new PlaySession("Admin");
+	ScoreHandler scoreHandler = new ScoreHandler("Admin");
     
     @RequestMapping("/refreshcache")
     public boolean refreshCache() {
@@ -29,14 +31,14 @@ public class RequestController {
     	
     }
     
-    @RequestMapping("/gethighscore")
-    public int getHighScore(@RequestParam String user) {
+    @RequestMapping("/getownhighscore")
+    public int getHighScores(@RequestParam String user) {
     	return 0;
     }
     
-    @RequestMapping("/gettopscore")
-    public int getTopScore(@RequestParam int position) {
-    	return 0;
+    @RequestMapping("/gettopscores")
+    public List<HighScoreDTO> getTopScores() {
+    	return scoreHandler.getHighScores();
     }
     
     @RequestMapping("/sethighscore")
@@ -55,7 +57,7 @@ public class RequestController {
     }
     
     @RequestMapping("/getbestword")
-    public Word getBestWord() {
+    public WordDTO getBestWord() {
     	return playSession.getBestWord();
     }
     
