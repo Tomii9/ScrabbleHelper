@@ -11,9 +11,10 @@ public class HighScoreDTO {
 		
 	}
 	
-	public HighScoreDTO(int highscore, String user) {
+	public HighScoreDTO(int highscore, String user, Date date) {
 		this.highscore = highscore;
 		this.user = user;
+		this.date = date;
 	}
 	
 	public int getHighscore() {

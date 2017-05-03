@@ -28,10 +28,20 @@ public class ScoreHandler {
 			return top3Scores;
 		}
 		
-		HighScoreDTO userScore = db.getScoreOfPlayer(user);
-		top3Scores.add(userScore);
+		top3Scores.add(db.getScoreOfPlayer(user));
+		
+		
 		
 		return top3Scores;
+	}
+	
+	public HighScoreDTO getOwnHighScore() {
+		return db.getScoreOfPlayer(user);
+	}
+	
+	public boolean updateHighScore(int score) {
+		db.updateHighScore(user, score);
+		return true;
 	}
 
 }

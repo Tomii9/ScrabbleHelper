@@ -39,8 +39,7 @@ public class ControllerTests {
     @Test
     public void WordAsParamShouldReturnWord() throws Exception {
 
-        this.mockMvc.perform(get("/getbestmatch?regex=word")).andDo(print()).andExpect(status().isOk())
-                .andExpect(jsonPath("$.word").value("word"));
+        this.mockMvc.perform(get("/refreshcache")).andDo(print()).andExpect(status().isOk());
     }
 
 }

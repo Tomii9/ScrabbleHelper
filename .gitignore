@@ -1,0 +1,14 @@
+.gradle
+.mvn
+.settings
+bin
+build
+gradle
+.classpath
+.project
+build.gradle
+gradlew.bat
+manifest.yml
+mvnw
+mvnw.cmd
+pom.xml

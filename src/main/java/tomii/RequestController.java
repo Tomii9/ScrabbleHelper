@@ -1,7 +1,10 @@
 package tomii;
 
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -10,12 +13,15 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class RequestController {
 
-	PlaySession playSession = new PlaySession("Admin");
-	ScoreHandler scoreHandler = new ScoreHandler("Admin");
+	LoginService loginService = new LoginService();
+	AdminService adminService = new AdminService();
+	Set<String> adminTokens = new HashSet<String>();
+	HashMap<String, PlaySession> playSessions = new HashMap<String, PlaySession>();
+	HashMap<String, ScoreHandler> scoreHandlers = new HashMap<String, ScoreHandler>();
     
     @RequestMapping("/refreshcache")
-    public boolean refreshCache() {
-    	return playSession.refreshCache();
+    public boolean refreshCache(@RequestParam String token) {
+    	return playSessions.get(token).refreshCache();
     }
     @RequestMapping("/placeword")
     public boolean placeWord(@RequestParam Map<String, String> requestParams){
@@ -23,52 +29,141 @@ public class RequestController {
     	int posX = Integer.parseInt(requestParams.get("x"));
     	int posY = Integer.parseInt(requestParams.get("y"));
     	boolean down = Boolean.valueOf(requestParams.get("down"));
-    	return playSession.placeWord(word, posX, posY, down);
+    	String token = requestParams.get("token");
+    	return playSessions.get(token).placeWord(word, posX, posY, down);
     }
     
-    @RequestMapping("/admin/banuser")
-    public void banUser(@RequestParam String user){
+    @RequestMapping("/login")
+    public SessionDTO login(@RequestParam Map<String, String> requestParams) {
+    	String user = requestParams.get("user");
+    	String password = requestParams.get("password");
+    	String toRemove = "";
+    	for (Map.Entry<String, PlaySession> session : playSessions.entrySet()) {
+			if (session.getValue().getUser().equals(user)) {
+				toRemove = session.getKey();
+			}
+		}
     	
-    }
-    
-    @RequestMapping("/getownhighscore")
-    public int getHighScores(@RequestParam String user) {
-    	return 0;
+    	if (!toRemove.equals("")) {
+    		playSessions.remove(toRemove);
+    		scoreHandlers.remove(toRemove);
+			if (adminTokens.contains(toRemove)) {
+				adminTokens.remove(toRemove);
+			}
+    	}
+    	
+    	SessionDTO sessionDTO = loginService.login(user, password);
+    	playSessions.put(sessionDTO.getToken(), new PlaySession(user));
+    	scoreHandlers.put(sessionDTO.getToken(), new ScoreHandler(user));
+    	if (sessionDTO.getType().equals("admin")) {
+    		adminTokens.add(sessionDTO.getToken());
+    	}
+    	return sessionDTO;
     }
     
     @RequestMapping("/gettopscores")
-    public List<HighScoreDTO> getTopScores() {
-    	return scoreHandler.getHighScores();
+    public List<HighScoreDTO> getTopScores(@RequestParam String token) {
+    	System.out.println(token + " no token?");
+    	return scoreHandlers.get(token).getHighScores();
+    }
+    
+    @RequestMapping("/getownhighscore")
+    public HighScoreDTO getOwnHighScore(@RequestParam String token) {
+    	return scoreHandlers.get(token).getOwnHighScore();
     }
     
     @RequestMapping("/sethighscore")
-    public void setHighScore(@RequestParam int score) {
-    	
+    public boolean setHighScore(@RequestParam Map<String, String> requestParams) {
+    	int score = Integer.parseInt(requestParams.get("score"));
+    	String token = requestParams.get("token");
+    	return scoreHandlers.get(token).updateHighScore(score);
     }
     
     @RequestMapping("/checklegitimacy")
-    public boolean treetest(@RequestParam String word) {
-    	return playSession.containsWord(word);
+    public boolean treetest(@RequestParam Map<String, String> requestParams) {
+    	String word = requestParams.get("word");
+    	String token = requestParams.get("token");
+    	return playSessions.get(token).containsWord(word);
     }
     
     @RequestMapping("/sethand")
-    public boolean setHand(@RequestParam String hand) {
-    	return playSession.setHand(hand);
+    public boolean setHand(@RequestParam Map<String, String> requestParams) {
+    	String hand = requestParams.get("hand");
+    	String token = requestParams.get("token");
+    	return playSessions.get(token).setHand(hand);
     }
     
     @RequestMapping("/getbestword")
-    public WordDTO getBestWord() {
-    	return playSession.getBestWord();
-    }
-    
-    @RequestMapping("/syncboard")
-    public char[][] syncBoard() {
-    	return playSession.getBoard();
+    public WordDTO getBestWord(@RequestParam String token) {
+    	return playSessions.get(token).getBestWord();
     }
     
     @RequestMapping("/resetboard")
-    public boolean resetBoard() {
-    	return playSession.resetBoard();
+    public boolean resetBoard(@RequestParam String token) {
+    	return playSessions.get(token).resetBoard();
     }
     
+    @RequestMapping("/logout")
+    public boolean logout(@RequestParam String token) {
+    	if (playSessions.keySet().contains(token)) {
+    		playSessions.remove(token);
+    		scoreHandlers.remove(token);
+    	} else {
+    		return false;
+    	}
+    	return true;
+    }
+    
+    @RequestMapping("/register")
+    public boolean register(@RequestParam Map<String, String> requestParams) {
+    	String user = requestParams.get("user");
+    	String password = requestParams.get("password");
+    	return loginService.register(user, password);
+    }
+    
+    @RequestMapping("/admin/banuser")
+    public boolean banUser(@RequestParam Map<String, String> requestParams){
+    	String user = requestParams.get("user");
+    	String token = requestParams.get("token");
+    	if (!adminTokens.contains(token)) {
+    		return false;
+    	}
+    	adminService.banUser(user);
+    	return true;
+    }
+    
+    @RequestMapping("/admin/resethighscore")
+    public boolean resetHighScore(@RequestParam Map<String, String> requestParams) {
+    	String user = requestParams.get("user");
+    	String token = requestParams.get("token");
+    	if (!adminTokens.contains(token)) {
+    		return false;
+    	}
+    	adminService.resetHighScoreOfPlayer(user);
+    	return true;
+    }
+    
+    @RequestMapping("/admin/addword")
+    public boolean addWord(@RequestParam Map<String, String> requestParams) {
+    	
+    	String word = requestParams.get("word");
+    	String token = requestParams.get("token");
+    	if (!adminTokens.contains(token)) {
+    		return false;
+    	}
+    	adminService.addWord(word, playSessions.get(token).getUser());
+    	return true;
+    }
+    
+    @RequestMapping("/admin/deleteword")
+    public boolean deleteWord(@RequestParam Map<String, String> requestParams) {
+    	
+    	String word = requestParams.get("word");
+    	String token = requestParams.get("token");
+    	if (!adminTokens.contains(token)) {
+    		return false;
+    	}
+    	adminService.deleteWord(word);
+    	return true;
+    }
 }

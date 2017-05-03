@@ -48,20 +48,6 @@ public class WordFinder {
 		lettervalues.put('y', 4);
 		lettervalues.put('z', 10);
 	}
-	
-	/*  as ANDREW W. APPEL'a AND GUY J. JACOBSON's definition of anchors is wrong in my opinion implement this is there's still time
-		should also consider the tiles on the end and start of "down" words, as these are not considered as potential anchors in 
- 		the one dimensional "across" check method if the line itself is empty
-		crosscheck ensures this will be a valid word.
-		
-		example:
-		
-		cross =>
-		
-		across
-	  	m
-	  	p
-	  	*/
 	  	
 	private boolean loneAnchor(AnchorSquare anchor) { 
 		int x = anchor.getX();
