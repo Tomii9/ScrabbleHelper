@@ -83,7 +83,7 @@ public class WordFinder {
 			if ((limit==0 && tempAnchorSquare.getY() >= leftPartLength) && !firstTurn) {
 				tempAnchorSquare.setY(anchorSquares.get(i).getY()-leftPartLength);
 				extendRight(new String(), trie.getRoot(), tempAnchorSquare, tempAnchorSquare, false, 0);
-			} else if (loneAnchor(tempAnchorSquare) && !firstTurn) {
+			} else if (loneAnchor(tempAnchorSquare) || firstTurn) {
 				leftPartForLoneAnchor(new String(), trie.getRoot(), limit, anchorSquares.get(i), tempAnchorSquare, false, 0);
 			} else {
 				leftPart(new String(), trie.getRoot(), limit, anchorSquares.get(i), tempAnchorSquare, false, 0);
@@ -112,7 +112,7 @@ public class WordFinder {
 				if (limit==0 && tempAnchorSquare.getY() >= leftPartLength && !firstTurn) {
 					tempAnchorSquare.setY(anchorSquares.get(i).getY()-leftPartLength);
 					extendRight(new String(), trie.getRoot(), tempAnchorSquare, tempAnchorSquare, true, 0);
-				} else if (loneAnchor(tempAnchorSquare) && !firstTurn) {
+				} else if (loneAnchor(tempAnchorSquare)) {
 					leftPartForLoneAnchor(new String(), trie.getRoot(), limit, anchorSquares.get(i), tempAnchorSquare, true, 0);
 				} else {
 					leftPart(new String(), trie.getRoot(), limit, anchorSquares.get(i), tempAnchorSquare, true, 0);
@@ -131,12 +131,10 @@ public class WordFinder {
 			}
 			boolean success = board.placeWord(largestWord, largestBeginsAtX, largestBeginsAtY, largestIsDown);
 			if (!success) { 
-				System.out.println(largestWord + " " + largestBeginsAtX + " " + largestBeginsAtY + " " + largestScore + " " + largestWord + " " + largestIsDown);
+				return result;
 			} else {
 				result = new WordDTO(largestWord, largestBeginsAtX, largestBeginsAtY, largestIsDown, largestScore);
-				System.out.println(largestWord + " " + largestBeginsAtX + " " + largestBeginsAtY + " " + largestScore + " " + largestWord + " " + largestIsDown);
 			}
-			
 		} else if (!firstTurn){
 			if (tempLargestIsDown) {
 				int temp = tempLargestBeginsAtX;
@@ -145,18 +143,15 @@ public class WordFinder {
 			}
 			boolean success = board.placeWord(tempResult, tempLargestBeginsAtX, tempLargestBeginsAtY, tempLargestIsDown);
 			if (!success) {
-				System.out.println("SHIT2");
-				System.out.println(tempResult + " " + tempLargestBeginsAtX + " " + tempLargestBeginsAtY + " " + tempLargestScore + " " + tempLargestIsDown);
+				return result;
 			} else {
 				result = new WordDTO(tempResult, tempLargestBeginsAtX, tempLargestBeginsAtY, tempLargestIsDown, tempLargestScore);
-				System.out.println(tempResult + " " + tempLargestBeginsAtX + " " + tempLargestBeginsAtY + " " + tempLargestScore + " " + tempLargestIsDown);
 			}
 		} else {
 			boolean success = board.placeWord(largestWord, largestBeginsAtX, largestBeginsAtY, largestIsDown);
 			if (!success) {
-				System.out.println("SHIT3");
+				return result;
 			} else {
-				System.out.println(largestWord + " " + largestBeginsAtX + " " + largestBeginsAtY + " " + largestScore + " " + largestWord + " " + largestIsDown);
 				result = new WordDTO(largestWord, largestBeginsAtX, largestBeginsAtY, largestIsDown, largestScore);
 			}
 		}
@@ -269,7 +264,7 @@ public class WordFinder {
 					AnchorSquare tempStart = new AnchorSquare();
 					tempStart.setX(start.getX());
 					tempStart.setY(start.getY()-1);
-					int crossValue = crossCheck(character, tempStart, transponed);
+					int crossValue = crossCheck(character, tempStart);
 					if (start.getY() > 0 && crossValue != -1) {
 						leftPart(character + partialWord, newNode, limit-1, anchor, tempStart, transponed, crossValue+crossSum);
 					}
@@ -283,7 +278,7 @@ public class WordFinder {
 						AnchorSquare tempStart = new AnchorSquare();
 						tempStart.setX(start.getX());
 						tempStart.setY(start.getY()-1);
-						int crossValue = crossCheck(character2, tempStart, transponed);
+						int crossValue = crossCheck(character2, tempStart);
 						if (start.getY() > 0 && crossValue != -1) {
 							leftPart(character2 + partialWord, newNode, limit-1, anchor, tempStart, transponed, crossValue+crossSum);
 						}
@@ -312,7 +307,7 @@ public class WordFinder {
 				Set<Character> childNodes = node.getChildren().keySet();
 				
 				for (Character c : childNodes) {
-					int crossValue = crossCheck(c, newSquare, transponed);
+					int crossValue = crossCheck(c, newSquare);
 					if (hand.contains(c) && crossValue != -1) {
 						hand.remove(new Character(c));
 						newNode = node.getChild(c);
@@ -325,7 +320,7 @@ public class WordFinder {
 					} else if (hand.contains('.')) {
 						Set<Character> allLetters = lettervalues.keySet();
 						for (Character c2: allLetters) {
-							crossValue = crossCheck(c2, newSquare, transponed);
+							crossValue = crossCheck(c2, newSquare);
 							if (node.getChild(c2) != null && crossValue != -1) {
 								hand.remove(new Character('.'));
 								newNode = node.getChild(c2);
@@ -351,7 +346,7 @@ public class WordFinder {
 		}
 	}
 	
-	private int crossCheck(Character c, AnchorSquare anchorSquare, boolean transponed) {
+	private int crossCheck(Character c, AnchorSquare anchorSquare) {
 
 		String toCheck = c.toString();
 		int x = anchorSquare.getX();
@@ -463,7 +458,7 @@ public class WordFinder {
 					AnchorSquare tempStart = new AnchorSquare();
 					tempStart.setX(start.getX());
 					tempStart.setY(start.getY()-1);
-					int crossValue = crossCheck(character, tempStart, transponed);
+					int crossValue = crossCheck(character, tempStart);
 					if (start.getY() > 0 && crossValue != -1) {
 						leftPartForLoneAnchor(character + partialWord, newNode, limit-1, anchor, tempStart, transponed, crossValue+crossSum);
 					}
@@ -477,7 +472,7 @@ public class WordFinder {
 						AnchorSquare tempStart = new AnchorSquare();
 						tempStart.setX(start.getX());
 						tempStart.setY(start.getY()-1);
-						int crossValue = crossCheck(character2, tempStart, transponed);
+						int crossValue = crossCheck(character2, tempStart);
 						if (start.getY() > 0 && crossValue != -1) {
 							leftPartForLoneAnchor(character2 + partialWord, newNode, limit-1, anchor, tempStart, transponed, crossValue+crossSum);
 						}
@@ -498,7 +493,7 @@ public class WordFinder {
 			Set<Character> childNodes = node.getChildren().keySet();
 			
 			for (Character c : childNodes) {
-				int crossValue = crossCheck(c, newSquare, transponed);
+				int crossValue = crossCheck(c, newSquare);
 				if (hand.contains(c) && crossValue != -1) {
 					hand.remove(new Character(c));
 					newNode = node.getChild(c);
@@ -511,7 +506,7 @@ public class WordFinder {
 				} else if (hand.contains('.')) {
 					Set<Character> allLetters = lettervalues.keySet();
 					for (Character c2: allLetters) {
-						crossValue = crossCheck(c2, newSquare, transponed);
+						crossValue = crossCheck(c2, newSquare);
 						if (node.getChild(c2) != null && crossValue != -1) {
 							hand.remove(new Character('.'));
 							newNode = node.getChild(c2);

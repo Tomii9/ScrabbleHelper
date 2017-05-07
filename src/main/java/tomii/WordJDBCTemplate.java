@@ -26,21 +26,18 @@ public class WordJDBCTemplate{
 	public void register(String user, String password) {
 		String SQL = "insert into USERS values ((select max(id) from users) +1, ?, 'normal', ?)";
 		jdbcTemplateObject.update(SQL, user, password);
-		SQL = "insert into high_scores values (0, (select max(id) from users), systimestamp";
+		SQL = "insert into high_scores values (0, (select max(id) from users), systimestamp)";
 		jdbcTemplateObject.update(SQL);
 	}
 
 	public void addWord(String word, String user) {
 		String SQL = "insert into WORDS (word, uploader) values (?, (select id from users where name = ?))";
 		jdbcTemplateObject.update(SQL, word, user);
-		System.out.println("Created new word " + word);
 	}
 
 	public void deleteWord(String word) {
 		String SQL = "Delete from WORDS where word = ?";
 		jdbcTemplateObject.update(SQL, word);
-		System.out.println("Deleted Word " + word );
-		
 	}
 	
 	public void banUser(String user) {

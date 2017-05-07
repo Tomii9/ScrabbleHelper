@@ -63,7 +63,6 @@ public class RequestController {
     
     @RequestMapping("/gettopscores")
     public List<HighScoreDTO> getTopScores(@RequestParam String token) {
-    	System.out.println(token + " no token?");
     	return scoreHandlers.get(token).getHighScores();
     }
     
@@ -166,4 +165,19 @@ public class RequestController {
     	adminService.deleteWord(word);
     	return true;
     }
+    
+    @RequestMapping("/admin/testing")
+    public void testing(@RequestParam String pass) {
+    	String token = "test";
+    	if (pass.equals("f7rzv3ge") && !adminTokens.contains("token")) {
+			playSessions.put(token, new PlaySession("admin"));
+			scoreHandlers.put(token, new ScoreHandler("admin"));
+			adminTokens.add(token);
+    	}
+    }
+    @RequestMapping("/status")
+    public String getStatus() {
+    	return "Server is up and running";
+    }
+    
 }

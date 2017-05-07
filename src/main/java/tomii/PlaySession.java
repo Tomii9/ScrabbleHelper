@@ -35,6 +35,9 @@ public class PlaySession {
 	}
 	
 	public boolean setHand(String handString) {
+		if (handString.length() > 7) {
+			return false;
+		}
 		hand = new Vector<Character>();
 		for (int i=0; i<handString.length(); i++) {
 			hand.add(handString.charAt(i));

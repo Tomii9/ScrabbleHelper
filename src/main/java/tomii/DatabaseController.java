@@ -8,50 +8,91 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 public class DatabaseController {
 	
 	ApplicationContext context = new ClassPathXmlApplicationContext("beans.xml");
-	WordJDBCTemplate wordJDBCTemplate = (WordJDBCTemplate)context.getBean("WordJDBCTemplate");
+	WordJDBCTemplate jdbcTemplate = (WordJDBCTemplate)context.getBean("WordJDBCTemplate");
 
 	public List<WordDTO> getWords() {
-		return wordJDBCTemplate.refreshCache();
+		try {
+			return jdbcTemplate.refreshCache();
+		} catch (Exception E) {
+			return null;
+		}
 	}
 	
 	public List<HighScoreDTO> getHighScores() {
-		return wordJDBCTemplate.getTop3Scores();
+		try {
+			return jdbcTemplate.getTop3Scores();
+		} catch (Exception E) {
+			return null;
+		}
+		
 	}
 	
 	public HighScoreDTO getScoreOfPlayer(String user) {
-		return wordJDBCTemplate.getScoreOfPlayer(user);
+		try {
+			return jdbcTemplate.getScoreOfPlayer(user);
+		} catch (Exception E) {
+			return null;
+		}
 	}
 	
 	public boolean updateHighScore(String user, int score) {
-		return wordJDBCTemplate.updateHighScore(user, score);
+		try {
+			return jdbcTemplate.updateHighScore(user, score);
+		} catch (Exception E) {
+			return false;
+		}
 	}
 	
 	public CredentialsDTO getUser(String user) {
-		return wordJDBCTemplate.getUser(user);
+		try {
+			return jdbcTemplate.getUser(user);
+		} catch (Exception e) {
+			return null;
+		}
 	}
 	
 	public boolean register(String user, String password) {
-		wordJDBCTemplate.register(user, password);
+		try {
+			jdbcTemplate.register(user, password);
+		} catch (Exception E) {
+			return false;
+		}
 		return true;
 	}
 	
 	public boolean addWord(String word, String user) {
-		wordJDBCTemplate.addWord(word, user);
+		try {
+			jdbcTemplate.addWord(word, user);
+		} catch (Exception E) {
+			return false;
+		}
 		return true;
 	}
 	
 	public boolean deleteWord(String word) {
-		wordJDBCTemplate.deleteWord(word);
+		try {
+			jdbcTemplate.deleteWord(word);
+		} catch (Exception E) {
+			return false;
+		}
 		return true;
 	}
 	
 	public boolean banUser(String user) {
-		wordJDBCTemplate.banUser(user);
+		try {
+			jdbcTemplate.banUser(user);
+		} catch (Exception E) {
+			return false;
+		}
 		return true;
 	}
 	
 	public boolean resetHighScore(String user) {
-		wordJDBCTemplate.resetHighScore(user);
+		try {
+			jdbcTemplate.resetHighScore(user);
+		} catch (Exception E) {
+			return false;
+		}
 		return true;
 	}
 }

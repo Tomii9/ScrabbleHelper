@@ -2,8 +2,6 @@ package tomii;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-
-import org.apache.catalina.valves.CrawlerSessionManagerValve;
 import org.springframework.jdbc.core.RowMapper;
 
 public class CredentialsMapper implements RowMapper<CredentialsDTO>{

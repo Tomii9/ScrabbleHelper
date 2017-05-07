@@ -80,8 +80,6 @@ public class Board {
 			if (word.equals(sameWord)) {
 				return false;
 			}
-			
-			print();
 			return true;
 			
 		} else if (!down && posY+word.length()<=15) {
@@ -102,8 +100,6 @@ public class Board {
 			if (word.equals(sameWord)) {
 				return false;
 			}
-			
-			print();
 			return true;
 		}
 		return false;
@@ -122,19 +118,5 @@ public class Board {
 			}
 		}
 		board = tmp;
-	}
-	
-	public void print() {
-		for(int i = 0; i < 15; i++) {
-			for(int j = 0; j < 15; j++) {
-				if (board[i][j] == '\u0000') {
-					System.out.print(". ");
-				} else {
-					System.out.print(board[i][j] + " ");
-				}
-			}
-			System.out.println();
-		}
-		System.out.println();
 	}
 }
