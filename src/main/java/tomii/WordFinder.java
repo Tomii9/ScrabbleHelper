@@ -271,19 +271,17 @@ public class WordFinder {
 					hand.add(character);
 					
 				} else if (hand.contains(new Character('.'))) {
-					Set<Character> allLetters = lettervalues.keySet();
-					for (Character character2 : allLetters) {
-						hand.remove(new Character('.'));
-						newNode = node.getChild(character2);
-						AnchorSquare tempStart = new AnchorSquare();
-						tempStart.setX(start.getX());
-						tempStart.setY(start.getY()-1);
-						int crossValue = crossCheck(character2, tempStart);
-						if (start.getY() > 0 && crossValue != -1) {
-							leftPart(character2 + partialWord, newNode, limit-1, anchor, tempStart, transponed, crossValue+crossSum);
-						}
-						hand.add(new Character('.'));
+					hand.remove(new Character('.'));
+					newNode = node.getChild(character);
+					AnchorSquare tempStart = new AnchorSquare();
+					tempStart.setX(start.getX());
+					tempStart.setY(start.getY()-1);
+					int crossValue = crossCheck(character, tempStart);
+					if (start.getY() > 0 && crossValue != -1) {
+						leftPart(character + partialWord, newNode, limit-1, anchor, tempStart, transponed, crossValue+crossSum);
 					}
+					hand.add(new Character('.'));
+					
 				}
 			}
 		}
@@ -318,20 +316,18 @@ public class WordFinder {
 						}
 						hand.add(c);
 					} else if (hand.contains('.')) {
-						Set<Character> allLetters = lettervalues.keySet();
-						for (Character c2: allLetters) {
-							crossValue = crossCheck(c2, newSquare);
-							if (node.getChild(c2) != null && crossValue != -1) {
-								hand.remove(new Character('.'));
-								newNode = node.getChild(c2);
-								if (newSquare.getY() < 14) {
-									nextSquare.setX(newSquare.getX());
-									nextSquare.setY(newSquare.getY()+1);
-									extendRight(partialWord+c2, newNode, nextSquare, start, transponed, crossSum + crossValue);
-								}
-								hand.add('.');
+						crossValue = crossCheck(c, newSquare);
+						if (node.getChild(c) != null && crossValue != -1) {
+							hand.remove(new Character('.'));
+							newNode = node.getChild(c);
+							if (newSquare.getY() < 14) {
+								nextSquare.setX(newSquare.getX());
+								nextSquare.setY(newSquare.getY()+1);
+								extendRight(partialWord+c, newNode, nextSquare, start, transponed, crossSum + crossValue);
 							}
+							hand.add('.');
 						}
+						
 					}
 				}
 			} else if (newSquare.getY() < 15){
@@ -465,19 +461,17 @@ public class WordFinder {
 					hand.add(character);
 					
 				} else if (hand.contains(new Character('.'))) {
-					Set<Character> allLetters = lettervalues.keySet();
-					for (Character character2 : allLetters) {
-						hand.remove(new Character('.'));
-						newNode = node.getChild(character2);
-						AnchorSquare tempStart = new AnchorSquare();
-						tempStart.setX(start.getX());
-						tempStart.setY(start.getY()-1);
-						int crossValue = crossCheck(character2, tempStart);
-						if (start.getY() > 0 && crossValue != -1) {
-							leftPartForLoneAnchor(character2 + partialWord, newNode, limit-1, anchor, tempStart, transponed, crossValue+crossSum);
-						}
-						hand.add(new Character('.'));
+					hand.remove(new Character('.'));
+					newNode = node.getChild(character);
+					AnchorSquare tempStart = new AnchorSquare();
+					tempStart.setX(start.getX());
+					tempStart.setY(start.getY()-1);
+					int crossValue = crossCheck(character, tempStart);
+					if (start.getY() > 0 && crossValue != -1) {
+						leftPartForLoneAnchor(character + partialWord, newNode, limit-1, anchor, tempStart, transponed, crossValue+crossSum);
 					}
+					hand.add(new Character('.'));
+					
 				}
 			}
 		}
@@ -504,20 +498,18 @@ public class WordFinder {
 					}
 					hand.add(c);
 				} else if (hand.contains('.')) {
-					Set<Character> allLetters = lettervalues.keySet();
-					for (Character c2: allLetters) {
-						crossValue = crossCheck(c2, newSquare);
-						if (node.getChild(c2) != null && crossValue != -1) {
-							hand.remove(new Character('.'));
-							newNode = node.getChild(c2);
-							if (newSquare.getY() < 14) {
-								nextSquare.setX(newSquare.getX());
-								nextSquare.setY(newSquare.getY()+1);
-								extendRight(partialWord+c2, newNode, nextSquare, start, transponed, crossSum + crossValue);
-							}
-							hand.add('.');
+					crossValue = crossCheck(c, newSquare);
+					if (node.getChild(c) != null && crossValue != -1) {
+						hand.remove(new Character('.'));
+						newNode = node.getChild(c);
+						if (newSquare.getY() < 14) {
+							nextSquare.setX(newSquare.getX());
+							nextSquare.setY(newSquare.getY()+1);
+							extendRight(partialWord+c, newNode, nextSquare, start, transponed, crossSum + crossValue);
 						}
+						hand.add('.');
 					}
+					
 				}
 			}
 
