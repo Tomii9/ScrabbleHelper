@@ -1,6 +1,6 @@
 package tomii;
 
-public class AnchorSquare {
+public class Square {
 	int x;
 	int y;
 	

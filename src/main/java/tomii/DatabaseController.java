@@ -8,7 +8,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 public class DatabaseController {
 	
 	ApplicationContext context = new ClassPathXmlApplicationContext("beans.xml");
-	WordJDBCTemplate jdbcTemplate = (WordJDBCTemplate)context.getBean("WordJDBCTemplate");
+	JDBCTemplate jdbcTemplate = (JDBCTemplate)context.getBean("JDBCTemplate");
 
 	public List<WordDTO> getWords() {
 		try {

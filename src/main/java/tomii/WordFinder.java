@@ -49,7 +49,7 @@ public class WordFinder {
 		lettervalues.put('z', 10);
 	}
 	  	
-	private boolean loneAnchor(AnchorSquare anchor) { 
+	private boolean loneAnchor(Square anchor) { 
 		int x = anchor.getX();
 		int y = anchor.getY();
 		return (y > 0 && board.getSquare(x, y-1) == EMPTY) && (y < 14 && board.getSquare(x, y+1) == EMPTY);
@@ -64,19 +64,19 @@ public class WordFinder {
 		largestScore = -1;
 		largestBeginsAtX = -1;
 		largestBeginsAtY = -1;
-		List<AnchorSquare> anchorSquares = getAnchorSquares(board);
+		List<Square> anchorSquares = getAnchorSquares(board);
 		WordDTO result = new WordDTO();
 		String tempResult = new String();
 		int tempLargestScore = -1;
 		int tempLargestBeginsAtX = -1;
 		int tempLargestBeginsAtY = -1;
 		boolean tempLargestIsDown = false;
-		AnchorSquare tempAnchorSquare = new AnchorSquare();
+		Square tempAnchorSquare = new Square();
 		int limit;
 		
 		for (int i=0; i<anchorSquares.size(); i++) {
 			limit = getLimit(anchorSquares.get(i), board);
-			tempAnchorSquare = new AnchorSquare();
+			tempAnchorSquare = new Square();
 			tempAnchorSquare.setX(anchorSquares.get(i).getX());
 			tempAnchorSquare.setY(anchorSquares.get(i).getY());
 			int leftPartLength = getLeftPart(tempAnchorSquare).length();
@@ -105,7 +105,7 @@ public class WordFinder {
 			anchorSquares = getAnchorSquares(board);
 			for (int i=0; i<anchorSquares.size(); i++) {
 				limit = getLimit(anchorSquares.get(i), board);
-				tempAnchorSquare = new AnchorSquare();
+				tempAnchorSquare = new Square();
 				tempAnchorSquare.setX(anchorSquares.get(i).getX());
 				tempAnchorSquare.setY(anchorSquares.get(i).getY());
 				int leftPartLength = getLeftPart(tempAnchorSquare).length();
@@ -163,7 +163,7 @@ public class WordFinder {
 		return true;
 	}
 	
-	public String getLeftPart(AnchorSquare anchorSquare) {
+	public String getLeftPart(Square anchorSquare) {
 		String leftPart = "";
 		int y = anchorSquare.getY();
 		int x = anchorSquare.getX();
@@ -179,9 +179,9 @@ public class WordFinder {
 		return trie.containsWord(string);
 	}
 	
-	private List<AnchorSquare> getAnchorSquares(Board board) {
-		List<AnchorSquare> anchorSquares = new Vector<AnchorSquare>();
-		AnchorSquare tmpSquare = new AnchorSquare();
+	private List<Square> getAnchorSquares(Board board) {
+		List<Square> anchorSquares = new Vector<Square>();
+		Square tmpSquare = new Square();
 		if (board.getSquare(7, 7) == EMPTY) {
 			tmpSquare.setX(7);
 			tmpSquare.setY(7);
@@ -195,25 +195,25 @@ public class WordFinder {
 							tmpSquare.setX(i);
 							tmpSquare.setY(j - 1);
 							anchorSquares.add(tmpSquare);
-							tmpSquare = new AnchorSquare();	
+							tmpSquare = new Square();	
 						}
 						if (j<14 && board.getSquare(i, j+1) == EMPTY) {
 							tmpSquare.setX(i);
 							tmpSquare.setY(j + 1);
 							anchorSquares.add(tmpSquare);
-							tmpSquare = new AnchorSquare();	
+							tmpSquare = new Square();	
 						}
 						if (i>0 && board.getSquare(i-1, j) == EMPTY) {
 							tmpSquare.setX(i - 1);
 							tmpSquare.setY(j);
 							anchorSquares.add(tmpSquare);
-							tmpSquare = new AnchorSquare();	
+							tmpSquare = new Square();	
 						}
 						if (i<14 && board.getSquare(i+1, j) == EMPTY) {
 							tmpSquare.setX(i + 1);
 							tmpSquare.setY(j);
 							anchorSquares.add(tmpSquare);
-							tmpSquare = new AnchorSquare();	
+							tmpSquare = new Square();	
 						}
 					}
 				}
@@ -222,7 +222,7 @@ public class WordFinder {
 		return anchorSquares;
 	}
 	
-	private int getLimit(AnchorSquare anchorSquare, Board board) {
+	private int getLimit(Square anchorSquare, Board board) {
 		int limit = 0;
 		int y = anchorSquare.getY();
 		while (y>0 && board.getSquare(anchorSquare.getX(), y-1) == EMPTY) {
@@ -236,7 +236,7 @@ public class WordFinder {
 		return limit;
 	}
 	
-	private boolean alreadyOnBoard(AnchorSquare start, char[] word) {
+	private boolean alreadyOnBoard(Square start, char[] word) {
 		int x = start.getX();
 		int y = start.getY();
 		
@@ -248,7 +248,7 @@ public class WordFinder {
 		return true;
 	}
 	
-	public void leftPart (String partialWord, Node node, int limit, AnchorSquare anchor, AnchorSquare start, boolean transponed, int crossSum) {
+	public void leftPart (String partialWord, Node node, int limit, Square anchor, Square start, boolean transponed, int crossSum) {
 		
 		extendRight(partialWord, node, anchor, start, transponed, crossSum);
 		Node newNode = new Node();
@@ -261,7 +261,7 @@ public class WordFinder {
 				if (hand.contains(character)) {
 					hand.remove(new Character(character));
 					newNode = node.getChild(character);
-					AnchorSquare tempStart = new AnchorSquare();
+					Square tempStart = new Square();
 					tempStart.setX(start.getX());
 					tempStart.setY(start.getY()-1);
 					int crossValue = crossCheck(character, tempStart);
@@ -273,7 +273,7 @@ public class WordFinder {
 				} else if (hand.contains(new Character('.'))) {
 					hand.remove(new Character('.'));
 					newNode = node.getChild(character);
-					AnchorSquare tempStart = new AnchorSquare();
+					Square tempStart = new Square();
 					tempStart.setX(start.getX());
 					tempStart.setY(start.getY()-1);
 					int crossValue = crossCheck(character, tempStart);
@@ -287,9 +287,9 @@ public class WordFinder {
 		}
 	}
 	
-	private void extendRight(String partialWord, Node node, AnchorSquare newSquare, AnchorSquare start, boolean transponed, int crossSum) {
+	private void extendRight(String partialWord, Node node, Square newSquare, Square start, boolean transponed, int crossSum) {
 		Node newNode = new Node();
-		AnchorSquare nextSquare = new AnchorSquare();
+		Square nextSquare = new Square();
 		if (node != null) {
 			
 			
@@ -316,7 +316,6 @@ public class WordFinder {
 						}
 						hand.add(c);
 					} else if (hand.contains('.')) {
-						crossValue = crossCheck(c, newSquare);
 						if (node.getChild(c) != null && crossValue != -1) {
 							hand.remove(new Character('.'));
 							newNode = node.getChild(c);
@@ -342,12 +341,12 @@ public class WordFinder {
 		}
 	}
 	
-	private int crossCheck(Character c, AnchorSquare anchorSquare) {
+	private int crossCheck(Character c, Square square) {
 
 		String toCheck = c.toString();
-		int x = anchorSquare.getX();
-		int y = anchorSquare.getY();
-		AnchorSquare crossStart = new AnchorSquare();
+		int x = square.getX();
+		int y = square.getY();
+		Square crossStart = new Square();
 		crossStart.setX(x);
 		crossStart.setY(y);
 		if (x > 0 && y<15 && board.getSquare(x-1, y) != EMPTY) {
@@ -358,7 +357,7 @@ public class WordFinder {
 			crossStart.setX(x);
 		}
 		
-		x = anchorSquare.getX();
+		x = square.getX();
 		if (x < 14 && y<15 && board.getSquare(x+1, y) != EMPTY) {
 			while (x < 14 && board.getSquare(x+1, y) != EMPTY) {
 				toCheck = toCheck + board.getSquare(x+1, y);
@@ -438,7 +437,7 @@ public class WordFinder {
 		largestIsDown = false;
 	}
 	
-	public void leftPartForLoneAnchor (String partialWord, Node node, int limit, AnchorSquare anchor, AnchorSquare start, boolean transponed, int crossSum) {
+	public void leftPartForLoneAnchor (String partialWord, Node node, int limit, Square anchor, Square start, boolean transponed, int crossSum) {
 		
 		extendRightForLoneAnchor(partialWord, node, anchor, start, transponed, crossSum);
 		Node newNode = new Node();
@@ -451,7 +450,7 @@ public class WordFinder {
 				if (hand.contains(character)) {
 					hand.remove(new Character(character));
 					newNode = node.getChild(character);
-					AnchorSquare tempStart = new AnchorSquare();
+					Square tempStart = new Square();
 					tempStart.setX(start.getX());
 					tempStart.setY(start.getY()-1);
 					int crossValue = crossCheck(character, tempStart);
@@ -463,7 +462,7 @@ public class WordFinder {
 				} else if (hand.contains(new Character('.'))) {
 					hand.remove(new Character('.'));
 					newNode = node.getChild(character);
-					AnchorSquare tempStart = new AnchorSquare();
+					Square tempStart = new Square();
 					tempStart.setX(start.getX());
 					tempStart.setY(start.getY()-1);
 					int crossValue = crossCheck(character, tempStart);
@@ -478,9 +477,9 @@ public class WordFinder {
 	}
 
 	
-	private void extendRightForLoneAnchor(String partialWord, Node node, AnchorSquare newSquare, AnchorSquare start, boolean transponed, int crossSum) {
+	private void extendRightForLoneAnchor(String partialWord, Node node, Square newSquare, Square start, boolean transponed, int crossSum) {
 		Node newNode = new Node();
-		AnchorSquare nextSquare = new AnchorSquare();
+		Square nextSquare = new Square();
 		if (node != null) {
 			
 			
@@ -498,7 +497,6 @@ public class WordFinder {
 					}
 					hand.add(c);
 				} else if (hand.contains('.')) {
-					crossValue = crossCheck(c, newSquare);
 					if (node.getChild(c) != null && crossValue != -1) {
 						hand.remove(new Character('.'));
 						newNode = node.getChild(c);

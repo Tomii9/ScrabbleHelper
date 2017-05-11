@@ -23,6 +23,7 @@ public class RequestController {
     public boolean refreshCache(@RequestParam String token) {
     	return playSessions.get(token).refreshCache();
     }
+    
     @RequestMapping("/placeword")
     public boolean placeWord(@RequestParam Map<String, String> requestParams){
     	String word = requestParams.get("word");

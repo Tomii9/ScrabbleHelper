@@ -14,8 +14,8 @@
    </bean>
 
    <!-- Definition for WordJDBCTemplate bean -->
-   <bean id = "WordJDBCTemplate" 
-      class = "tomii.WordJDBCTemplate">
+   <bean id = "JDBCTemplate" 
+      class = "tomii.JDBCTemplate">
       <property name = "dataSource" ref = "dataSource" />    
    </bean>
       

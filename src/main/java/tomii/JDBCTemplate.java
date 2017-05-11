@@ -7,11 +7,11 @@ import javax.sql.DataSource;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 
-public class WordJDBCTemplate{
+public class JDBCTemplate{
 
 	private JdbcTemplate jdbcTemplateObject;
 	private DataSource datasource;
-	public WordJDBCTemplate() {
+	public JDBCTemplate() {
 	}
 	
 	public void setDataSource(DataSource dataSource) {
