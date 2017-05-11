@@ -12,6 +12,7 @@ public class JDBCTemplate{
 	private JdbcTemplate jdbcTemplateObject;
 	private DataSource datasource;
 	public JDBCTemplate() {
+		//context.getbean needs an empty constructor
 	}
 	
 	public void setDataSource(DataSource dataSource) {

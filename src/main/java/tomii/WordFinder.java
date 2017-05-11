@@ -71,7 +71,7 @@ public class WordFinder {
 		int tempLargestBeginsAtX = -1;
 		int tempLargestBeginsAtY = -1;
 		boolean tempLargestIsDown = false;
-		Square tempAnchorSquare = new Square();
+		Square tempAnchorSquare;
 		int limit;
 		
 		for (int i=0; i<anchorSquares.size(); i++) {
@@ -251,7 +251,7 @@ public class WordFinder {
 	public void leftPart (String partialWord, Node node, int limit, Square anchor, Square start, boolean transponed, int crossSum) {
 		
 		extendRight(partialWord, node, anchor, start, transponed, crossSum);
-		Node newNode = new Node();
+		Node newNode;
 		
 		if (limit > 0 && node != null) {
 			
@@ -288,7 +288,7 @@ public class WordFinder {
 	}
 	
 	private void extendRight(String partialWord, Node node, Square newSquare, Square start, boolean transponed, int crossSum) {
-		Node newNode = new Node();
+		Node newNode;
 		Square nextSquare = new Square();
 		if (node != null) {
 			
@@ -440,7 +440,7 @@ public class WordFinder {
 	public void leftPartForLoneAnchor (String partialWord, Node node, int limit, Square anchor, Square start, boolean transponed, int crossSum) {
 		
 		extendRightForLoneAnchor(partialWord, node, anchor, start, transponed, crossSum);
-		Node newNode = new Node();
+		Node newNode;
 		
 		if (limit > 0 && node != null) {
 			
@@ -478,7 +478,7 @@ public class WordFinder {
 
 	
 	private void extendRightForLoneAnchor(String partialWord, Node node, Square newSquare, Square start, boolean transponed, int crossSum) {
-		Node newNode = new Node();
+		Node newNode;
 		Square nextSquare = new Square();
 		if (node != null) {
 			

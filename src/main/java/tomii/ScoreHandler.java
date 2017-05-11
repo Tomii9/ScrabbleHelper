@@ -13,7 +13,7 @@ public class ScoreHandler {
 	}
 	
 	public List<HighScoreDTO> getHighScores() {
-		List<HighScoreDTO> top3Scores = new Vector<HighScoreDTO>();
+		List<HighScoreDTO> top3Scores;
 		
 		top3Scores = db.getHighScores();
 		

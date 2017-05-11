@@ -57,23 +57,5 @@ public class Node {
 		return children.containsKey(ch);
 	}
 	
-	public boolean equals (Node node) {
-		
-		char[] alphabet = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'};
-		
-		boolean equals = true;
-		if (ch == node.getChar() && isValid == node.isValid() && partialWord.equals(node.getPartialWord())) {
-			for (char c : alphabet) {
-				if (getChild(c) != node.getChild(c)) {
-					equals = false;
-				}
-			}
-			if (equals) {
-				return true;
-			}
-			return false;
-		}
-		return false;
-	}
 
 }
