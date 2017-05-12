@@ -152,6 +152,7 @@ public class RequestController {
     		return false;
     	}
     	adminService.addWord(word, playSessions.get(token).getUser());
+    	playSessions.get(token).refreshCache();
     	return true;
     }
     
@@ -164,6 +165,7 @@ public class RequestController {
     		return false;
     	}
     	adminService.deleteWord(word);
+    	playSessions.get(token).refreshCache();
     	return true;
     }
     

@@ -46,7 +46,8 @@ public class ControllerTests {
     
     @Test
     public void loginAsRegular() throws Exception {
-    	this.mockMvc.perform(get("/login?user=Derc&password=tyutyu29"))
+    	this.mockMvc.perform(get("/register?user=test&password=test"));
+    	this.mockMvc.perform(get("/login?user=test&password=test"))
 			.andExpect(status().isOk())
 			.andExpect(jsonPath("$.token").isNotEmpty())
 			.andExpect(jsonPath("$.type").value("normal"));
