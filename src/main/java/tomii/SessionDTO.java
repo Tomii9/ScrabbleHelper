@@ -1,5 +1,8 @@
 package tomii;
 
+/*
+ * This Class is to be sent as JSON to the client. DO NOT include any logic
+ */
 public class SessionDTO {
 	String token;
 	String type;

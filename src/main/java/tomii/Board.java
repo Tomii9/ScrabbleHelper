@@ -86,6 +86,11 @@ public class Board {
 			
 			for (int j=0; j<word.length(); j++) {
 				
+				
+				/* For some Reason cloning the board does not work, thus approach was chosen.
+				 * on every letter placement the original is being saved. In case of an overWrite
+				 * the word gets rolled back
+				 */
 				if (isOverWrite(posX, posY+j, word.charAt(j))) {
 					for (int k=0; k<j; k++) {
 						board[posX][posY+k] = boardSave[k];

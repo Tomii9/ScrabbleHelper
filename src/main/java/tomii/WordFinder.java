@@ -54,25 +54,27 @@ public class WordFinder {
 		int y = anchor.getY();
 		return (y > 0 && board.getSquare(x, y-1) == EMPTY) && (y < 14 && board.getSquare(x, y+1) == EMPTY);
 	}
-	
+	// get Anchors, call leftPart on each one, transpone the board, then do it again.
 	public WordDTO getBestWord(List<Character> hand, Board board) {
 		boolean firstTurn = board.getSquare(7, 7) == EMPTY;
 		resetBestWord();
 		this.board = board;
 		this.hand = hand;
+		int limit;
 		largestWord = "";
 		largestScore = -1;
 		largestBeginsAtX = -1;
 		largestBeginsAtY = -1;
 		List<Square> anchorSquares = getAnchorSquares(board);
 		WordDTO result = new WordDTO();
+		//these are needed to for saving the best found until the transponing of the board happens
 		String tempResult = new String();
 		int tempLargestScore = -1;
 		int tempLargestBeginsAtX = -1;
 		int tempLargestBeginsAtY = -1;
 		boolean tempLargestIsDown = false;
 		Square tempAnchorSquare;
-		int limit;
+		
 		
 		for (int i=0; i<anchorSquares.size(); i++) {
 			limit = getLimit(anchorSquares.get(i), board);
@@ -406,6 +408,7 @@ public class WordFinder {
 		return result;
 	}
 	
+	//separate summing method is needed because this iterates along X, while the other along the Y.
 	private int sumCrossValue(String word, int x, int y) {
 		int result = 0;
 		int wordMultiplier = 0;
@@ -437,6 +440,11 @@ public class WordFinder {
 		largestIsDown = false;
 	}
 	
+	/**
+	 * lone anchors would lead to incorrect results, if the prefix by itself is in the Trie.
+	 * Thus, this method is created. It does not differ from leftPart, only thing is it calls extendRightForLoneAnchor,
+	 * which does a right extension AT LEAST 1 time.
+	 */
 	public void leftPartForLoneAnchor (String partialWord, Node node, int limit, Square anchor, Square start, boolean transponed, int crossSum) {
 		
 		extendRightForLoneAnchor(partialWord, node, anchor, start, transponed, crossSum);

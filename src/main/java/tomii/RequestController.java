@@ -16,6 +16,8 @@ public class RequestController {
 	LoginService loginService = new LoginService();
 	AdminService adminService = new AdminService();
 	Set<String> adminTokens = new HashSet<String>();
+	
+	//keys are tokens which are generated on login
 	HashMap<String, PlaySession> playSessions = new HashMap<String, PlaySession>();
 	HashMap<String, ScoreHandler> scoreHandlers = new HashMap<String, ScoreHandler>();
     
